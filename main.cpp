@@ -1,5 +1,8 @@
 //TODO: Wirte methods for c-string type string, std string and also poiner arithmetics
 
+#include <string>
+#include <iostream>
+
 int LengthOfString(char* string)
 {
     int lengthOfString = 0;
@@ -36,9 +39,26 @@ bool HasUniqueCharacters(char* string)
     return true;
 }
 
+bool HasUniqueCharacters(std::string string)
+{
+	for (int i = 0; i < string.size(); ++i)
+	{
+		for (int j = i + 1; j < string.size(); ++j)
+		{
+			if (string.at(i) == string.at(j))
+			{
+				return false;
+			}
+		}
+	}
+	return true;
+}
+
 int main()
 {
-    char* zmienna = "Kot";
-    HasUniqueCharacters(zmienna);
+    char zmienna[] = "Kot";
+    std::string kolejnaZmienna = "DupaD";
+    std::cout << HasUniqueCharacters(kolejnaZmienna);	
+    std::cout << HasUniqueCharacters(zmienna);
     return 0;   
 }
