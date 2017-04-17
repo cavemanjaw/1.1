@@ -19,6 +19,24 @@ int LengthOfString(char* string)
     return lengthOfString;
 }
 
+bool HasUniqueCharactersPointers(char* string)
+{
+	while (*string)
+	{
+		char* ptr = string + 1;
+		while (*ptr)
+		{
+			if (*string == *ptr)
+			{
+				return false;
+			}
+			++ptr;
+		}
+		++string;
+	}
+	return true;
+}
+
 //For c-strings, char* type of string
 bool HasUniqueCharacters(char* string)
 {
@@ -57,8 +75,10 @@ bool HasUniqueCharacters(std::string string)
 int main()
 {
     char zmienna[] = "Kot";
+    char cos[] = "KotK";
     std::string kolejnaZmienna = "DupaD";
     std::cout << HasUniqueCharacters(kolejnaZmienna);	
     std::cout << HasUniqueCharacters(zmienna);
+    std::cout << HasUniqueCharactersPointers(cos);
     return 0;   
 }
