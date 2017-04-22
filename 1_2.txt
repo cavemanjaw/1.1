@@ -27,7 +27,26 @@ void ReverseModify(char* string)
   }
 }
 
-//char* ReverseCreate
+//Would be easier to just copy an input string at the beginning of the function
+char* ReverseCreate(char* string)
+{
+  int stringLength = 0;
+  while (*string)
+  {
+    ++stringLength;
+    ++string;
+  }
+  
+  char* returnedString = (char*)malloc(sizeof(char)*(stringLength + 1));
+  char* returnedPtr = returnedString;
+  for (int i = 0; i < stringLength; ++i)
+  {
+    *returnedPtr = *(--string);
+    ++returnedPtr;
+  }
+  *returnedPtr = '\0';
+  return returnedString;
+}
 
 int main()
 {
