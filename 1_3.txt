@@ -17,7 +17,8 @@ void RemoveDuplicates(char* string)
 				{
 					*removeItr = *(removeItr + 1);
 					++removeItr;
-				}	
+				}
+				--innerItr;
 			}
 			++innerItr;		
 		}
