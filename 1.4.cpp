@@ -22,7 +22,14 @@ int** NewMatrix(int matrixSize)
 int* RotateContSquareMatrix(int* inputMatrix, int matrixSize)
 {
 	//Write the method here :)
-	int* returnedPtr;
+	int* returnedPtr = NewContMatrix(matrixSize);
+	for (int i = 0; i < matrixSize; ++i)
+	{
+		for (int j = 0; j < matrixSize; ++j)
+		{
+			retrunedPtr[(matrixSize - j - 1) * i] = inputMatrix[i * j];	
+		}
+	}
 	return returnedPtr;
 }
 
