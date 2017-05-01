@@ -3,6 +3,9 @@
 #include <utility>
 #include <stdlib.h>
 
+
+//the best solution is to go through an array, at the end of loop, if there was encountered zero, replace whole line with zeros, during iteration we can store values of column and set accordingly, but there must be a loop for setting the prevoius column to zero, but they should be ignored during next passes! 
+
 typedef std::vector<std::vector<int>> Array;
 
 void RandomFillArray(Array& array)
