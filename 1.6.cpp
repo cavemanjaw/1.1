@@ -44,6 +44,12 @@ int* RotateContSquareMatrix(int* inputMatrix, int matrixSize)
 int Access4BitMatrix(int* matrix, int matrixSize, int row, int column)
 
 //Funkcja obliczaj¹ca, który int
+int* PointerToAccess4BitArray(int* matrix, int matrixSize, int row, int column)
+{
+	//Element number?
+	int intIndex = row * matrixSize + column;
+	return (matrix + intIndex);
+} 
 
 //Funkcja obliczaj¹ca i ile przesun¹c tego inta
 
