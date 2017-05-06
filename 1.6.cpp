@@ -43,6 +43,10 @@ int* RotateContSquareMatrix(int* inputMatrix, int matrixSize)
 //For accessing specific element in 4bit array
 int Access4BitMatrix(int* matrix, int matrixSize, int row, int column)
 
+//Funkcja obliczaj¹ca, który int
+
+//Funkcja obliczaj¹ca i ile przesun¹c tego inta
+
 int* RotateMatrix4Bits(int* inputMatrix, int matrixSize)
 {
 	int* retrunedMatrix = New4BitMatrix(matrixSize);
