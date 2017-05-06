@@ -8,6 +8,13 @@ int* NewContMatrix(int matrixSize)
 	return returnedPtr;
 }
 
+//Zaokr¹glanie do góry potrzebne!
+int* New4BitMatrix(int matrixSize)
+{	
+	int* returnedMatrix = malloc(matrixSize * (matrixSize / 2) + (matrixSize % 2));	
+	return returnedMatrix;
+}
+
 int** NewMatrix(int matrixSize)
 {
 	int** returnedMatrix;
@@ -27,10 +34,25 @@ int* RotateContSquareMatrix(int* inputMatrix, int matrixSize)
 	{
 		for (int j = 0; j < matrixSize; ++j)
 		{
-			retrunedPtr[(matrixSize - j - 1) * i] = inputMatrix[i * j];	
+			retrunedPtr[((matrixSize - j - 1) * matrixSize) + i] = inputMatrix[(i * matrixSize) + j];	
 		}
 	}
 	return returnedPtr;
+}
+
+//For accessing specific element in 4bit array
+int Access4BitMatrix(int* matrix, int matrixSize, int row, int column)
+
+int* RotateMatrix4Bits(int* inputMatrix, int matrixSize)
+{
+	int* retrunedMatrix = New4BitMatrix(matrixSize);
+	int sizeInInts = (matrixSize / 8) + (matrixSize % 2);
+
+	//Loop over all the elements?
+	for (int i = 0; i < matrixSize * matrixSize; ++i)
+	{
+		
+	}
 }
 
 int** RotateSquareMatrix(int** inputMatrix, int matrixSize)
