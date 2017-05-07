@@ -47,9 +47,27 @@ int Access4BitMatrix(int* matrix, int matrixSize, int row, int column)
 int* PointerToAccess4BitArray(int* matrix, int matrixSize, int row, int column)
 {
 	//Element number?
-	int intIndex = row * matrixSize + column;
+	//Take the celing of a number
+	int intIndex = ((row * matrixSize + column) + 8 - 1) / 8;
 	return (matrix + intIndex);
-} 
+}
+
+//Calculation should be easy, use modulo % if %8 == 0, then are the first four bits (or not?) YES (if the are numbered starting from zero)
+
+//signed - unsigned problem
+
+//How this gets promoted? Mixing signed and unsigned?
+int GetValue(int* matrix, int matrixSize, int row, int column)
+{
+	int elementPositionInInt = (row * matrixSize + column) % 8;
+	int* ptrToInt = PointerToAccess4BitArray(matrix, matrixSize, row, column);
+	int returnedInt = (*ptrToInt) 	
+
+	return 	
+}
+
+//int position = (row * matrixSize + column) % 8;
+
 
 //Funkcja obliczaj¹ca i ile przesun¹c tego inta
 
