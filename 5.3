@@ -1,0 +1,19 @@
+void PrintLargestAndSmallestWithTheSameAmountOfOnes(unsigned variable)
+{
+    unsigned setBitsCounter = 0;
+    
+    // Count the number of bits set to one
+    for (int i = 0; i < sizeof(varaible) * 8; ++i)
+    {
+        if (variable & (1U << i))
+        {
+            ++setBitsCounter;
+        }
+    }
+    
+    unsigned smallestInteger = ((1U << setBitsCounter) - 1) << (32 - setBitsCounter);
+    unsigned largestInteger = ((1U << setBitsCounter) - 1); 
+    
+    std::cout << "The largest number with the same amount of bits set as the input variable is "<< largestInteger << std::endl;
+    std::cout << "The smallest number with the same amount of bits set as in the input variable is "<< smallestInteger << std::endl;
+}
