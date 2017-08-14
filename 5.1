@@ -1,0 +1,9 @@
+unsigned PlaceBitsIntoWord(unsigned M, unsigned N, int i, int j)
+{
+    unsigned bitMask = ~(1U << (j - i + 1)) - 1;
+    return (N & bitMask) | (M << i); 
+}
+
+int main()
+{
+}
