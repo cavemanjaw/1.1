@@ -13,8 +13,10 @@ unsigned ReturnMissingInteger(unsigned* integerTable, int tableSize)
 		isCurrentBitSet = FetchBit(integerTable[i], 0);
 		if (isPreviousBitSet == isCurrentBitSet)
 		{
-			//Found, return
-			//Check all the bits of this int and construct output value
+			return (integerTable[i] - 1);
+			//Found, return, this is the option of returning the whole value
+			
+			//The other possibillity is to check all the bits of this int and construct output value
 		}
 		else
 		{
