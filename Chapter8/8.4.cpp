@@ -58,9 +58,33 @@ std::vector<std::string> FindAllPermutationsOfString(std::string string)
 	return InsertCharacterInEveryPossiblePlace(string);
 }
 
+
+//Maybe even cannot compile, investigate
+//std::vector<std::string> GetAllPermutationsOfString(std::string string)
+//{
+//	std::vector<std::string> permutations;
+//	for (int i = 0; i < string.lenght(); ++i)
+//	{
+//		for (auto& elem: permutations)
+//		{
+//			std::string element = elem;
+//			std::vector<std::string> recentlyPushedItems;
+//			for (int j = 0; j <= element.lenght(); ++j)
+//			{
+//				std::string elementToPush;
+//				recentlyPushedItems.push_back(elementToPush.insert(i, 1, string[i]);
+//			}
+//		}
+//	}
+//}
+
 int main()
 {
-	std::string exampleString = "Ulalala";
-	FindAllPermutationsOfString(exampleString);
+	std::string exampleString = "abcd";
+	std::vector<std::string> wektor = FindAllPermutationsOfString(exampleString);
+	for (auto& v: wektor)
+	{
+		std::cout << v << "\n";
+	}
 	return 0;
 }
