@@ -172,9 +172,6 @@ void RearrangeBuffer(ParentheseClass* buffer, int newlyAllocatedObjects, int all
 	{
 		buffer[l].Invalidate();
 	}
-
-	// After memcpy() we have this amount of objects in buffer
-	allocatedObjects = newlyAllocatedObjects;
 }
 
 // VLA and stack buffers allocation?
@@ -224,6 +221,9 @@ void AddParentheseVla(int nrOfParentheses, bool (*finalHandler)(ParentheseClass*
 		
 		// All done for this iteration, rearrange the buffer
 		RearrangeBuffer(buffer, newlyAllocatedObjects, allocatedObjects);
+		
+		// After RearrangeBuffer call we have this amount of objects in buffer
+		allocatedObjects = newlyAllocatedObjects;
 	}
 }
 
