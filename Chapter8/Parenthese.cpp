@@ -1,6 +1,7 @@
 #include <cstring>
 #include <string>
 #include <climits>
+#include <assert.h>
 
 class ParentheseClass
 {
@@ -8,30 +9,100 @@ public:
 	ParentheseClass(int nrOfParentheses):
 		numberOfLeftAllocableParentheses(nrOfParentheses - 1),
 		numberOfRightAllocableParentheses(nrOfParentheses),
-		parentheseString("("),
+		string(nullptr),
 		numberOfRightAllocatedParentheses(0),
 		numberOfLeftAllocatedParentheses(1)
 	{
+		// Calculate the size of allocation for string, two times the nrOfParentheses
+		int allocationSize = 2 * nrOfParentheses;
+
+		// nrOfParentheses times two, we must fit left and right ones
+		string = new char[allocationSize];
+
+		// The actual size for heap-allocated string
+		allocatedStringSize = allocationSize;
+
+		// Insert the initial left parenthese
+		string[0] = '(';
 	}
 
-	ParentheseClass()
+	ParentheseClass():
+		string(nullptr),
+		allocatedStringSize(0)
 	{
+	}
+
+	ParentheseClass(const ParentheseClass& rhs):
+		string(nullptr),
+		allocatedStringSize(rhs.allocatedStringSize)
+	{
+		// Could be in constructor initializer list
+		numberOfLeftAllocableParentheses = rhs.numberOfLeftAllocableParentheses;
+		numberOfRightAllocableParentheses = rhs.numberOfRightAllocableParentheses;
+		numberOfRightAllocatedParentheses = rhs.numberOfRightAllocatedParentheses;
+		numberOfLeftAllocatedParentheses = rhs.numberOfLeftAllocatedParentheses;
+	
+		if (rhs.string != nullptr)
+		{
+			string = new char[rhs.allocatedStringSize];
+			strcpy(string, rhs.string);
+		}
+	}
+	
+	// Write it in a way that won't have to check for self-assignment
+	ParentheseClass& operator=(const ParentheseClass& rhs)
+	{
+		allocatedStringSize = rhs.allocatedStringSize;
+		numberOfLeftAllocableParentheses = rhs.numberOfLeftAllocableParentheses;
+		numberOfRightAllocableParentheses = rhs.numberOfRightAllocableParentheses;
+		numberOfRightAllocatedParentheses = rhs.numberOfRightAllocatedParentheses;
+		numberOfLeftAllocatedParentheses = rhs.numberOfLeftAllocatedParentheses;
+		
+		if (&rhs != this)
+		{
+			delete[] string;
+			string = new char[rhs.allocatedStringSize];
+			strcpy(string, rhs.string);
+		}
+		return *this;
 	}
 
 	~ParentheseClass()
 	{
+		delete string;
+	}
+
+	void Invalidate()
+	{
+		string = nullptr;
 	}
 
 	void AddLeftParenthese()
 	{
-		parentheseString.push_back('(');
+		assert(numberOfLeftAllocableParentheses > 0);
+		
+		int locationToPutParenthese = 
+			numberOfLeftAllocatedParentheses + numberOfRightAllocatedParentheses;
+		
+		// Assert when we cannot fit the parenthese in allocated array
+		assert(allocatedStringSize - 1 >= locationToPutParenthese);
+		
+		string[numberOfLeftAllocatedParentheses + numberOfRightAllocatedParentheses] = '(';
 		--numberOfLeftAllocableParentheses;
 		++numberOfLeftAllocatedParentheses;
 	}
 	
 	void AddRightParenthese()
 	{
-		parentheseString.push_back(')');
+		assert(numberOfRightAllocableParentheses > 0);
+
+		int locationToPutParenthese = 
+			numberOfLeftAllocatedParentheses + numberOfRightAllocatedParentheses;
+		
+		// Assert when we cannot fit the parenthese in allocated array
+		assert(allocatedStringSize - 1 >= locationToPutParenthese);
+		
+		string[numberOfLeftAllocatedParentheses + numberOfRightAllocatedParentheses] = ')';
 		--numberOfRightAllocableParentheses;
 		++numberOfRightAllocatedParentheses;
 	}
@@ -43,7 +114,7 @@ public:
 	
 	int GetAllocableLeft()
 	{
-		return numberOfLeftAllocatedParentheses;
+		return numberOfLeftAllocableParentheses;
 	}
 
 	int NumberOfLeftParentheses()
@@ -61,7 +132,8 @@ private:
 	int numberOfRightAllocableParentheses;
 	int numberOfRightAllocatedParentheses;
 	int numberOfLeftAllocatedParentheses;
-	std::string parentheseString;
+	char* string;
+	int allocatedStringSize;
 };
 
 bool SaveResults(ParentheseClass* source, ParentheseClass* destination, size_t numOfBytes)
@@ -103,6 +175,11 @@ void AddParentheseVla(int nrOfParentheses, bool (*finalHandler)(ParentheseClass*
 				// Add new ParenthesesClass object to newly allocated buffer
 				// Decrement numberOfLeftParentheses
 				// Add with newly added left parenthese
+
+				//MEGA::TODO This creates objectToInsert with nullptr value and then calling
+				// AddLeftParenthese writes some not owning part of memory!
+
+				// Just call the constructor for arbitrary value of nrOfParentheses which max value is known at this point
 				ParentheseClass objectToInsert = buffer[i];
 				objectToInsert.AddLeftParenthese();
 
@@ -110,10 +187,10 @@ void AddParentheseVla(int nrOfParentheses, bool (*finalHandler)(ParentheseClass*
 				++allocatedObjects;
 			}
 			
-			if (buffer[i].GetAllocableLeft() > 0 && (buffer[i].NumberOfLeftParentheses() > buffer[i].NumberOfRightParentheses()))
+			// Logic was wrong, one should not check buffer[i].GetAllocableLeft() > 0	
+			if (buffer[i].NumberOfLeftParentheses() > buffer[i].NumberOfRightParentheses())
 			{
 				// Almost the same as above, with the difference of added side of parenthese
-				
 				ParentheseClass objectToInsert = buffer[i];
 				objectToInsert.AddRightParenthese();
 
@@ -125,6 +202,8 @@ void AddParentheseVla(int nrOfParentheses, bool (*finalHandler)(ParentheseClass*
 		// How much objects did we allocated in this iteration?
 		unsigned newlyAllocatedObjects = allocatedObjects - loopRange;
 		
+
+
 		//Hello! You have to call destructors manually for those objects which are being overwritten
 		for (int k = 0; k < loopRange; ++k)
 		{
@@ -135,11 +214,19 @@ void AddParentheseVla(int nrOfParentheses, bool (*finalHandler)(ParentheseClass*
 		// Copy the newly allocated objects to the beginning of the buffer
 		memmove(&buffer, &buffer[loopRange], sizeof(ParentheseClass) * newlyAllocatedObjects);
 		
+		// Invalidate objects at the end of buffer since they might point to the same resources and will be deleted by
+		// the assignemnt operator for ParentheseClass the next iterations
+		// THIS MUST HAPPEN AFTER THE MEMMOVE!
+		for (int l = newlyAllocatedObjects; l < allocatedObjects; ++l)
+		{
+			buffer[l].Invalidate();
+		}
+
 		// After memcpy() we have this amount of objects in buffer
 		allocatedObjects = newlyAllocatedObjects;
 	}
 	// This is to prevent destructors of buffer array from dealocating garbage values pointers
-	memset(&buffer, 0, sizeof(ParentheseClass) * bufferSize);
+	//memset(&buffer, 0, sizeof(ParentheseClass) * bufferSize); NOT NEEDED SINCE THE ADDITION OF CALLING DTORS AND INVALIDATE()
 }
 
 int main()
