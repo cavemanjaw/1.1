@@ -151,6 +151,32 @@ bool DiscardResults(ParentheseClass* source, ParentheseClass* destination, size_
 	return true;
 }
 
+void RearrangeBuffer(ParentheseClass* buffer, int newlyAllocatedObjects, int allocatedObjects)
+{
+	int processedObjects = allocatedObjects - newlyAllocatedObjects;
+
+	//Hello! You have to call destructors manually for those objects which are being overwritten
+	for (int k = 0; k < processedObjects; ++k)
+	{
+		// This should be called for every not used object in buffer before copying the current
+		// "valuable" objects to the beginning of the buffer
+		buffer[k].~ParentheseClass();
+	}
+	// Copy the newly allocated objects to the beginning of the buffer
+	memmove(buffer, &buffer[processedObjects], sizeof(ParentheseClass) * newlyAllocatedObjects);
+	
+	// Invalidate objects at the end of buffer since they might point to the same resources and will be deleted by
+	// the assignemnt operator for ParentheseClass the next iterations
+	// THIS MUST HAPPEN AFTER THE MEMMOVE!
+	for (int l = newlyAllocatedObjects; l < allocatedObjects; ++l)
+	{
+		buffer[l].Invalidate();
+	}
+
+	// After memcpy() we have this amount of objects in buffer
+	allocatedObjects = newlyAllocatedObjects;
+}
+
 // VLA and stack buffers allocation?
 void AddParentheseVla(int nrOfParentheses, bool (*finalHandler)(ParentheseClass*, ParentheseClass*, size_t))
 {	
@@ -175,11 +201,6 @@ void AddParentheseVla(int nrOfParentheses, bool (*finalHandler)(ParentheseClass*
 				// Add new ParenthesesClass object to newly allocated buffer
 				// Decrement numberOfLeftParentheses
 				// Add with newly added left parenthese
-
-				//MEGA::TODO This creates objectToInsert with nullptr value and then calling
-				// AddLeftParenthese writes some not owning part of memory!
-
-				// Just call the constructor for arbitrary value of nrOfParentheses which max value is known at this point
 				ParentheseClass objectToInsert = buffer[i];
 				objectToInsert.AddLeftParenthese();
 
@@ -187,7 +208,6 @@ void AddParentheseVla(int nrOfParentheses, bool (*finalHandler)(ParentheseClass*
 				++allocatedObjects;
 			}
 			
-			// Logic was wrong, one should not check buffer[i].GetAllocableLeft() > 0	
 			if (buffer[i].NumberOfLeftParentheses() > buffer[i].NumberOfRightParentheses())
 			{
 				// Almost the same as above, with the difference of added side of parenthese
@@ -202,31 +222,9 @@ void AddParentheseVla(int nrOfParentheses, bool (*finalHandler)(ParentheseClass*
 		// How much objects did we allocated in this iteration?
 		unsigned newlyAllocatedObjects = allocatedObjects - loopRange;
 		
-
-
-		//Hello! You have to call destructors manually for those objects which are being overwritten
-		for (int k = 0; k < loopRange; ++k)
-		{
-			// This should be called for every not used object in buffer before copying the current
-			// "valuable" objects to the beginning of the buffer
-			buffer[k].~ParentheseClass();
-		}
-		// Copy the newly allocated objects to the beginning of the buffer
-		memmove(&buffer, &buffer[loopRange], sizeof(ParentheseClass) * newlyAllocatedObjects);
-		
-		// Invalidate objects at the end of buffer since they might point to the same resources and will be deleted by
-		// the assignemnt operator for ParentheseClass the next iterations
-		// THIS MUST HAPPEN AFTER THE MEMMOVE!
-		for (int l = newlyAllocatedObjects; l < allocatedObjects; ++l)
-		{
-			buffer[l].Invalidate();
-		}
-
-		// After memcpy() we have this amount of objects in buffer
-		allocatedObjects = newlyAllocatedObjects;
+		// All done for this iteration, rearrange the buffer
+		RearrangeBuffer(buffer, newlyAllocatedObjects, allocatedObjects);
 	}
-	// This is to prevent destructors of buffer array from dealocating garbage values pointers
-	//memset(&buffer, 0, sizeof(ParentheseClass) * bufferSize); NOT NEEDED SINCE THE ADDITION OF CALLING DTORS AND INVALIDATE()
 }
 
 int main()
