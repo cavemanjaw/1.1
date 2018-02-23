@@ -7,7 +7,7 @@ int GetNthFibonacciNumberRecursively(int n)
 	{
 		return 0;
 	}
-	else if (n <= 2)
+	else if (n == 1)
 	{
 		return 1;
 	}
@@ -44,6 +44,7 @@ int GetNthFibonacciNumber(int n)
 
 int main()
 {
+	std::cout << GetNthFibonacciNumberRecursively(5);
 	std::cout << GetNthFibonacciNumber(1);
 	std::cout << GetNthFibonacciNumber(2);
 	std::cout << GetNthFibonacciNumber(10);
