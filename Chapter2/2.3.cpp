@@ -1,5 +1,3 @@
-//Assuminng there is a 
-
 template <typename T>
 class List
 {
