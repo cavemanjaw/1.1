@@ -23,7 +23,7 @@ class List
 
       Node<T>** previousNode = nullptr;
       Node<T>** nodePtr = &head;
-      while (nodePtr)
+      while (*nodePtr)
       {
 
          auto isInserted = seenValues.insert((*nodePtr)->data);
@@ -38,7 +38,48 @@ class List
          else
          {
             previouseNode = nodePtr;
-            nodePtr = &(*nodePtr)->nextNode;
+            nodePtr = &(*nodePtr)->next;
+         }
+      }
+   }
+   void RemoveDuplicatesWithoutBuffer()
+   {
+      Node<T>** outerLoopNodePtr = &head;
+      Node<T>** innerLoopNodePtr = &(*head)->next;
+      Node<T>** innerLoopNodePtrPrev = &head;
+
+      while (*outerLoopPtr)
+      {
+         while (*innerLoopNodePtr)
+         {
+            if ((*outerLoopPtr)->data == (*innerLoopPtr)->data)
+            {
+               Node<T>* nodeToRemove = *innerLoopPtr;
+               (*innerLoopNodePtrPrev)->next = (*innerLoopPtr)->next;
+               innerLoopPtr = &(*innerLoopPtr)->next;
+               delete nodeToRemove;
+            }
+            else
+            {
+               innerLoopNodePtrPrev = innerLoopNodePtr;
+               innerLoopNodePtr = &(*innerLoopNodePtr)->next;
+            }
+         }
+         
+         outerLoopNodePtr = &(*outerLoopNodePtr)->next;
+      }
+   }
+
+   void Insert()
+   {
+      Node<T>** nodePtr = &head;
+
+      while (true)
+      {
+         if (*nodePtr == nullptr)
+         {
+            *nodePtr = new Node<T>;
+            break;
          }
       }
    }
