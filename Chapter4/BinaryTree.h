@@ -43,4 +43,19 @@ bool InsertUnique(T data)
    nodePtr->data = data;
 }
 
+template <typename T>
+bool IsBalanced()
+{
+   //Traverse the tree, keep track of max-depth and current depth-counter
+   size_t maxDepth = 0;
+   size_t currentDepth = 0;
+
+   Node<T>* nodePtr = head;
+
+   while (nodePtr)
+   {
+      //How to traverse the tree, chose an algorithm
+   }
+}
+
 #endif // #ifndef BINARY_TREE_H
