@@ -58,4 +58,23 @@ bool IsBalanced()
    }
 }
 
+template <typename T>
+void TraverseTreePreOrder(Node<T>* nodePtr = head)
+{
+   //root, left, right order
+
+   Node<T>* nodePtr = head;
+
+   if (nodePtr == nullptr)
+   {
+      return;
+   }
+
+   //Take some action here!
+   
+   TraverseTreePreOrder(head->left);
+
+   TraverseTreePreOrder(head->right);
+}
+
 #endif // #ifndef BINARY_TREE_H
