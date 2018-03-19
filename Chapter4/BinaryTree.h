@@ -1,52 +1,72 @@
 #ifndef BINARY_TREE_H
 #define BINARY_TREE_H
 
+#include <iostream>
+
 template <typename T>
 class Node
 {
    public:
+   Node();
    Node<T>* left;
    Node<T>* right;
    T value;
 };
 
 template <typename T>
+Node<T>::Node():
+   left(nullptr),
+   right(nullptr)
+{
+}
+
+template <typename T>
 class BinaryTree
 {
    public:
+   BinaryTree();
    Node<T>* root;
    bool InsertUnique(T value);
+   void TraversePreorder();
    void TraversePreorder(Node<T>* nodePtr);
    bool& TraversePreorderAndCheck(Node<T>* nodePtr, bool& isTrue, int& currentDepth, int& maxDepth);
    bool IsBalanced(Node<T>* nodePtr);
+   bool IsBalanced();
 };
+
+template <typename T>
+BinaryTree<T>::BinaryTree():
+   root(nullptr)
+{
+
+}
 
 template <typename T>
 bool BinaryTree<T>::InsertUnique(T value)
 {
-   Node<T>* nodePtr = root;
+   Node<T>** nodePtr = &root;
 
-   while (nodePtr != nullptr)
+   while (*nodePtr != nullptr)
    {
-      if (nodePtr->value == value)
+      if ((*nodePtr)->value == value)
       {
          //The value is already in container
          return false;
       }
-      if (((*nodePtr).left)->value < value)
+      if ((*nodePtr)->left != nullptr && ((*nodePtr)->left)->value < value )
       {
          //Value in left child is less than the value we want to put into container
-         nodePtr = nodePtr->right;
+         nodePtr = &((*nodePtr)->right);
       }
       else
       {
          //Value in right child is greater or equal to the parameter value
-         nodePtr = nodePtr->left;
+         nodePtr = &((*nodePtr)->left);
       }
    }
    //We have found nulltpr pointer, insert the value
-   nodePtr = new Node<T>;
-   nodePtr->value = value;
+   (*nodePtr) = new Node<T>;
+   (*nodePtr)->value = value;
 }
 
 //template <typename T>
@@ -66,6 +86,15 @@ bool BinaryTree<T>::InsertUnique(T value)
 //
 //
 
+
+//Must have an overload to do that
+template <typename T>
+void BinaryTree<T>::TraversePreorder()
+{
+   TraversePreorder(root);
+}
+
+
 template <typename T>
 void BinaryTree<T>::TraversePreorder(Node<T>* nodePtr)
 {
@@ -74,9 +103,11 @@ void BinaryTree<T>::TraversePreorder(Node<T>* nodePtr)
      return;
   }
 
-  TraversePreorder(root->left);
+  std::cout << nodePtr->value << std::endl;
 
-  TraversePreorder(root->right);
+  TraversePreorder(nodePtr->left);
+
+  TraversePreorder(nodePtr->right);
 }
 
 
@@ -115,9 +146,9 @@ bool& BinaryTree<T>::TraversePreorderAndCheck(Node<T>* nodePtr, bool& isTrue, in
    //Do stuff
    ++currentDepth;
 
-   TraversePreorderAndCheck(nodePtr->left, isTrue);
+   TraversePreorderAndCheck(nodePtr->left, isTrue, currentDepth, maxDepth);
 
-   TraversePreorderAndCheck(nodePtr->right, isTrue);
+   TraversePreorderAndCheck(nodePtr->right, isTrue, currentDepth, maxDepth);
 
    //Here we just unwind the stack, as traversed left and right, go to the calee
    --currentDepth;
@@ -142,6 +173,11 @@ bool BinaryTree<T>::IsBalanced(Node<T>* nodePtr)
    return isBalanced;
 }
 
+template <typename T>
+bool BinaryTree<T>::IsBalanced()
+{
+   IsBalanced(root);
+}
 
 //Function must return immediately if tree is not balanced
 //Function must return a value indicating if tree is balanced
