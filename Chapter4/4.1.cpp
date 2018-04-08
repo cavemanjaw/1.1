@@ -16,7 +16,7 @@ int main()
 
    binaryTree.InsertUnique(7);
 
-   //binaryTree.InsertUnique(1);
+   binaryTree.InsertUnique(1);
 
    binaryTree.InsertUnique(2);
 
