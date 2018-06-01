@@ -52,6 +52,14 @@ void SortByAnagrams(std::string array[], int stringArraySize)
            //FOUND
            //It is an anagram, act on this xD
            //This functionality should be wrapped in some other function
+           //
+           //So, i-th string is an anagram of j-th string, in other words j-th string has been found as anagram of i-th string
+           //
+           //Can take a branch and omit copying if anagram of i-th string is adajcent, that is if (i = j + 1)
+           std::string tmpToSwap = array[j + 1];
+           array[j + 1] = array[i];
+           array[i] = tmpToSwap;
+           //The element at position array[i] won't be checked again and it is good behaviour
         }
       }
    }
