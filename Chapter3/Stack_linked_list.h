@@ -4,14 +4,24 @@
 template<typename T>
 class StackNode
 {
+   //Correct that by befriending class or nesting it
+   public:
    T data;
-   T* prevNode;
+   StackNode<T>* prevNode;
+
+   StackNode();
+};
+
+template<typename T>
+StackNode<T>::StackNode() : prevNode(nullptr)
+{
 }
 
 template<typename T>
 class Stack
 {
    public:
+   Stack()
    T Pop();
    void Push(T elem);
 
@@ -19,19 +29,25 @@ class Stack
 
    private:
    StackNode<T>* top;
+};
+
+template<typename T>
+Stack<T>::Stack() : top(nullptr)
+{
 }
 
 template<typename T>
-T Stack::Pop()
+T Stack<T>::Pop()
 {
-   StackNode temp = *top;
+   //You have to be careful with empty stack, what to do if you called Pop() on empty stack?
+   StackNode<T> temp = *top;
    delete top;
    top = temp.prevNode;
    return temp.data;
 }
 
 template<typename T>
-void Stack::Push(T elem)
+void Stack<T>::Push(T elem)
 {
    StackNode<T>* temp = new StackNode<T>;
    temp->data = elem;
